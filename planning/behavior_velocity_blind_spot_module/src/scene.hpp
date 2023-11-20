@@ -40,6 +40,8 @@ struct BlindSpotPolygons
 {
   std::vector<lanelet::CompoundPolygon3d> conflict_areas;
   std::vector<lanelet::CompoundPolygon3d> detection_areas;
+  std::vector<lanelet::CompoundPolygon3d> opposite_conflict_areas;
+  std::vector<lanelet::CompoundPolygon3d> opposite_detection_areas;
 };
 
 class BlindSpotModule : public SceneModuleInterface
@@ -52,8 +54,10 @@ public:
     geometry_msgs::msg::Pose virtual_wall_pose;
     geometry_msgs::msg::Pose stop_point_pose;
     geometry_msgs::msg::Pose judge_point_pose;
-    std::vector<lanelet::CompoundPolygon3d> conflict_areas_for_blind_spot;
-    std::vector<lanelet::CompoundPolygon3d> detection_areas_for_blind_spot;
+    std::vector<lanelet::CompoundPolygon3d> conflict_areas;
+    std::vector<lanelet::CompoundPolygon3d> detection_areas;
+    std::vector<lanelet::CompoundPolygon3d> opposite_conflict_areas;
+    std::vector<lanelet::CompoundPolygon3d> opposite_detection_areas;
     autoware_auto_perception_msgs::msg::PredictedObjects conflicting_targets;
   };
 
@@ -69,6 +73,7 @@ public:
     double threshold_yaw_diff;   //! threshold of yaw difference between ego and target object
     double
       adjacent_extend_width;  //! the width of extended detection/conflict area on adjacent lane
+    double opposite_adjacent_extend_width;
   };
 
   BlindSpotModule(
@@ -119,6 +124,8 @@ private:
   lanelet::ConstLanelet generateHalfLanelet(const lanelet::ConstLanelet lanelet) const;
 
   lanelet::ConstLanelet generateExtendedAdjacentLanelet(
+    const lanelet::ConstLanelet lanelet, const TurnDirection direction) const;
+  lanelet::ConstLanelet generateExtendedOppositeAdjacentLanelet(
     const lanelet::ConstLanelet lanelet, const TurnDirection direction) const;
 
   /**
