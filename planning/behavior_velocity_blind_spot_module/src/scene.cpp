@@ -609,19 +609,21 @@ boost::optional<BlindSpotPolygons> BlindSpotModule::generateBlindSpotPolygons(
       }
       if (turn_direction_ == TurnDirection::LEFT) {
         // this should exist in right-hand traffic
-        const auto adjacents = lanelet_map_ptr->laneletLayer.findUsages(lane.leftBound().invert());
-        if (adjacents.empty()) {
+        const auto adjacent_lanes =
+          lanelet_map_ptr->laneletLayer.findUsages(lane.leftBound().invert());
+        if (adjacent_lanes.empty()) {
           return boost::none;
         }
-        return adjacents.front();
+        return adjacent_lanes.front();
       }
       if (turn_direction_ == TurnDirection::RIGHT) {
         // this should exist in left-hand traffic
-        const auto adjacents = lanelet_map_ptr->laneletLayer.findUsages(lane.rightBound().invert());
-        if (adjacents.empty()) {
+        const auto adjacent_lanes =
+          lanelet_map_ptr->laneletLayer.findUsages(lane.rightBound().invert());
+        if (adjacent_lanes.empty()) {
           return boost::none;
         }
-        return adjacents.front();
+        return adjacent_lanes.front();
       } else {
         return boost::none;
       }
